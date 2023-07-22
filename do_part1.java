@@ -12,10 +12,28 @@ import java.io.FileInputStream;
 public class do_part1 {
 
     private static boolean validateFields(String[] fields) {
-        if (fields[1].trim()== "Hokey"||fields[1].trim()== "Football"||fields[1].trim()== "Basketball")
-            return true;
-        else
+        String sport = fields[1].trim();
+        int year = Integer.parseInt(fields[2].trim());
+
+        if(!(sport.equals("Hokey") || sport.equals("Football") || sport.equals("Basketball")))
             return false;
+
+        if (year <= 2000) {
+            return false;
+        }
+
+
+        if (!(fields[3].trim().contains("-"))) {
+            return false;
+        }
+
+
+        String flag = fields[4].trim();
+        if (!flag.equals("Y") && !flag.equals("N")) {
+            return false;
+        }
+
+        return true;
     }
     //need to fix this to sort through input txt
     String inputFile0 = "games2001.csv";
@@ -28,26 +46,65 @@ public class do_part1 {
 
     public do_part1() {
 
-        try (BufferedReader br = new BufferedReader(new FileReader("games2001.csv"))) {
+    for (int y = 0; y<=3;y++)
+    {
+
+    try (BufferedReader br = new BufferedReader(new FileReader("part1 input file names (1).txt")))
+        {
+        String readCsv = br.readLine().trim();
+        y++;
+        }
+
+    catch (IOException e) {
+            System.out.println("Error reading/writing file: " + e.getMessage());
+        }
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("readCsv"))) {
             String line;
-            while ((line = br.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) {
                 String[] fields = line.split(",");
 
-                // Validate fields
-                boolean isValidFormat = validateFields(fields);
-
-                String sport = fields[1].trim();
-
-                if (isValidFormat) {
-                    writeToFile(sport + ".csv", line);
-                } else {
+                try {
+                    if (fields.length > 5) {
+                        throw new TooManyFieldsException("Error: There are too many fields");
+                    }
+                    try {
+                        if(fields.length<5){
+                            throw new TooFewFieldsException("Error: There are too few fields");
+                        }
+                        // Validate fields
+                        boolean isValidFormat = validateFields(fields);
+                        if (isValidFormat){
+                            throw new UnknownSportException("Error: There is an unknown sport defined");
+                        }
+                        // Determine the sport field
+                        if (fields.length >= 2) {
+                            String sport = fields[1].trim();
+                            if (isValidFormat) {
+                                writeToFile(sport + ".csv", line);
+                            } else {
+                                writeToFile("syntax_error_file.txt", line);
+                            }
+                        }
+                    }
+                    catch(UnknownSportException e){
+                        System.out.println(e.getMessage());
+                        writeToFile("syntax_error_file.txt", line);
+                    }
+                    catch(TooFewFieldsException e){
+                        System.out.println(e.getMessage());
+                        writeToFile("syntax_error_file.txt", line);
+                    }
+                } catch (TooManyFieldsException e) {
+                    System.out.println(e.getMessage());
                     writeToFile("syntax_error_file.txt", line);
                 }
             }
-
         } catch (IOException e) {
             System.out.println("Error reading/writing file: " + e.getMessage());
         }
+    }
+
 
 
     }
