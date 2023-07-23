@@ -49,8 +49,9 @@ public class do_part1 {
 
     try (BufferedReader br = new BufferedReader(new FileReader("part1 input file names (1).txt"))) {
         String readCsv;
+        br.readLine(); //want to start reading at second line
         while ((readCsv = br.readLine()) != null) {
-
+                readCsv = readCsv.trim();
             try (BufferedReader bufferedReader = new BufferedReader(new FileReader("readCsv"))) {
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
