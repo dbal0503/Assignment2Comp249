@@ -46,68 +46,63 @@ public class do_part1 {
 
     public do_part1() {
 
-    for (int y = 0; y<=3;y++)
-    {
 
-    try (BufferedReader br = new BufferedReader(new FileReader("part1 input file names (1).txt")))
-        {
-        String readCsv = br.readLine().trim();
-        y++;
-        }
+    try (BufferedReader br = new BufferedReader(new FileReader("part1 input file names (1).txt"))) {
+        String readCsv;
+        while ((readCsv = br.readLine()) != null) {
 
-    catch (IOException e) {
-            System.out.println("Error reading/writing file: " + e.getMessage());
-        }
+            try (BufferedReader bufferedReader = new BufferedReader(new FileReader("readCsv"))) {
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    String[] fields = line.split(",");
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("readCsv"))) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] fields = line.split(",");
-
-                try {
-                    if (fields.length > 5) {
-                        throw new TooManyFieldsException("Error: There are too many fields");
-                    }
                     try {
-                        if(fields.length<5){
-                            throw new TooFewFieldsException("Error: There are too few fields");
+                        if (fields.length > 5) {
+                            throw new TooManyFieldsException("Error: There are too many fields");
                         }
-                        // Validate fields
-                        boolean isValidFormat = validateFields(fields);
-                        if (isValidFormat){
-                            throw new UnknownSportException("Error: There is an unknown sport defined");
-                        }
-                        // Determine the sport field
-                        if (fields.length >= 2) {
-                            String sport = fields[1].trim();
-                            if (isValidFormat) {
-                                writeToFile(sport + ".csv", line);
-                            } else {
-                                writeToFile("syntax_error_file.txt", line);
+                        try {
+                            if (fields.length < 5) {
+                                throw new TooFewFieldsException("Error: There are too few fields");
                             }
+                            // Validate fields
+                            boolean isValidFormat = validateFields(fields);
+                            if (isValidFormat) {
+                                throw new UnknownSportException("Error: There is an unknown sport defined");
+                            }
+                            // Determine the sport field
+                            if (fields.length >= 2) {
+                                String sport = fields[1].trim();
+                                if (isValidFormat) {
+                                    writeToFile(sport + ".csv", line);
+                                } else {
+                                    writeToFile("syntax_error_file.txt", line);
+                                }
+                            }
+                        } catch (UnknownSportException e) {
+                            System.out.println(e.getMessage());
+                            writeToFile("syntax_error_file.txt", line);
+                        } catch (TooFewFieldsException e) {
+                            System.out.println(e.getMessage());
+                            writeToFile("syntax_error_file.txt", line);
                         }
-                    }
-                    catch(UnknownSportException e){
+                    } catch (TooManyFieldsException e) {
                         System.out.println(e.getMessage());
                         writeToFile("syntax_error_file.txt", line);
                     }
-                    catch(TooFewFieldsException e){
-                        System.out.println(e.getMessage());
-                        writeToFile("syntax_error_file.txt", line);
-                    }
-                } catch (TooManyFieldsException e) {
-                    System.out.println(e.getMessage());
-                    writeToFile("syntax_error_file.txt", line);
                 }
+            } catch (IOException e) {
+                System.out.println("Error reading/writing file: " + e.getMessage());
             }
-        } catch (IOException e) {
-            System.out.println("Error reading/writing file: " + e.getMessage());
         }
     }
-
-
-
+    catch (IOException e) {
+        System.out.println("Error reading/writing file: " + e.getMessage());
     }
+    }
+
+
+
+
 
     private static void writeToFile(String filename, String line) throws IOException {
         try (PrintWriter printWriter = new PrintWriter(new FileWriter(filename, true))) {
