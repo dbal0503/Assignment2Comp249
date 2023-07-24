@@ -13,13 +13,40 @@ public class do_part1 {
     public static String error;
     public String missingfield;
 
-    public static boolean validateshortfield(String[] fields){
-        for (int i =0; i< fields.length;i++){
-            for (int j=0; j<fields.length; j++){
-
+    public static String validateshortfield(String[] fields, String csv) {
+        boolean sportscheck = false;
+        boolean yearcheck = false;
+        boolean recordcheck = false;
+        boolean champcheck =false;
+        int correctyear = Integer.parseInt(csv.replaceAll("[^0-9]","").trim());
+        String correctyear1 = Integer.toString(correctyear);
+        for (int i =0; i< fields.length; i++){
+            if (fields[i].trim().equals("Hokey") || fields[i].trim().equals("Football") || fields[i].trim().equals("Basketball")){
+                sportscheck =true;
+            }
+            if (fields[i].trim().equals(correctyear1)){
+                yearcheck = true;
+            }
+            if (fields[i].trim().contains("-")){
+                recordcheck = true;
+            }
+            if(fields[i].trim().equals("Y") || fields[i].trim().equals("N")){
+                champcheck = true;
             }
         }
-        return true;
+        if (!recordcheck){
+            return "Missing Record";
+        }
+        if (!sportscheck){
+            return "Missing Sport";}
+        if (!yearcheck){
+            return "Missing Year";
+        }
+        if (!champcheck){
+            return "Missing Championship Status";
+
+        }
+        return "Missing nothing";
     }
 
 
@@ -87,31 +114,7 @@ public class do_part1 {
                         }
                         try {
                             if (fields.length < 5) {
-                                int count = 0;
-                                for (int j =0; j< fields.length; j++){
-                                    System.out.println(fields[j]);
-                                    if (fields[j].equals(null)){
-                                        System.out.println("aa");
-                                        count = j;
-                                    }
-                                }
-                                switch (count){
-                                    case 0:{
-                                        missingfield = "Team";
-                                        break;}
-                                    case 1:{
-                                        missingfield = "Sport";
-                                        break;}
-                                    case 2:{
-                                        missingfield = "Year";
-                                    }
-                                    case 3:{
-                                        missingfield = "Record";
-                                        break;}
-                                    case 4:{
-                                        missingfield = "Championship Status";
-                                    }
-                                }
+                                missingfield = validateshortfield(fields, s[i]);
                                 throw new TooFewFieldsException("Error: There are too few fields");
                             }
                             // Validate fields
