@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.Objects;
+import java.util.Scanner;
 
 
 public class Main {
@@ -133,7 +134,51 @@ public class Main {
         catch (IOException ioException){
             System.out.println(ioException.getMessage());
 
-        }    }
+        }
+    }
+
+    /*
+    public static void readSer(){
+        try {
+            String[] hardcodedNames = {"Hokey.csv.ser", "Basketball.csv.ser", "Football.csv.ser"};
+
+            Team[] hokeyTeams;
+            Team[] basketballTeams;
+            Team[] footballTeams;
+
+            for (int i = 0; i < hardcodedNames.length; i++) {
+                FileInputStream fileInputStream = new FileInputStream(hardcodedNames[i]);
+                ObjectInputStream inputStream = new ObjectInputStream(new BufferedInputStream(fileInputStream));
+
+
+                Team[] teamArr = (Team[]) inputStream.readObject();
+
+                inputStream.close();
+                fileInputStream.close();
+
+                switch (i) {
+                    case 0:
+                        hokeyTeams = teamArr;
+                        break;
+                    case 1:
+                        basketballTeams = teamArr;
+                        break;
+                    case 2:
+                        footballTeams = teamArr;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        catch (IOException ioException){
+            System.out.println(ioException.getMessage());
+
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+*/
 
     public static void do_part1() {
 
@@ -224,6 +269,7 @@ public class Main {
     }
 
 
+
     public static void do_part2() {
         int number;
         int count=0;
@@ -281,14 +327,133 @@ public class Main {
 
 
     }
-    public static void do_part3(){
 
+
+
+
+
+
+
+
+
+
+    public static void do_part3() {
+        Team[] hokeyTeams = new Team[10];
+        Team[] basketballTeams = new Team[10];
+        Team[] footballTeams = new Team[10];
+        int currentSportIndex = 0;
+        int currentRecordIndex = 0;
+        Team[] currentSportArray = hokeyTeams;
+
+
+        try {
+            String[] hardcodedNames = {"Hokey.csv.ser", "Basketball.csv.ser", "Football.csv.ser"};
+            int counterH = 0;
+            int counterB = 0;
+            int counterF = 0;
+
+            for (int i = 0; i < hardcodedNames.length; i++) {
+                FileInputStream fileInputStream = new FileInputStream(hardcodedNames[i]);
+               ObjectInputStream inputStream = new ObjectInputStream(new BufferedInputStream(fileInputStream));
+
+
+                        Team teamObj = (Team) inputStream.readObject();
+                        switch (i) {
+                            case 0:
+                                hokeyTeams[counterH] = teamObj;
+                                System.out.println("bb");
+                                counterH++;
+                                break;
+                            case 1:
+                                basketballTeams[counterB] = teamObj;
+                                counterB++;
+                                break;
+                            case 2:
+                                footballTeams[counterF] = teamObj;
+                                counterF++;
+                                break;
+                            default:
+                                break;
+                        }
+
+
+
+            }
+
+
+
+            System.out.println("Printing contents of hokey array");
+            for (Team element : hokeyTeams) {
+                System.out.print(element);
+            }
+            System.out.println();
+            System.out.println(counterH);
+
+
+
+
+
+            Scanner scanner = new Scanner(System.in);
+            while (true) {
+                System.out.println("----------------------------");
+                System.out.println("Main Menu");
+                System.out.println("----------------------------");
+                System.out.println("v View the selected file: " + hardcodedNames[currentSportIndex] + " (" + currentSportArray.length + " records)");
+                System.out.println("s Select a file to view");
+                System.out.println("x Exit");
+                System.out.println("----------------------------");
+                System.out.print("Enter Your Choice: ");
+                String choice = scanner.next();
+
+                switch (choice.toLowerCase()) {
+                    case "v":
+                        //ViewMenu();
+                        break;
+                    case "s":
+                        SubMenu(hokeyTeams,basketballTeams,footballTeams);
+                        break;
+                    case "x":
+                        System.exit(0);
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                        break;
+                }
+            }
+
+
+        } catch (IOException ioException) {
+            System.out.println(ioException.getMessage());
+
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+    }
+
+    public static void SubMenu(Team[] hokeyTeams, Team[] basketballTeams, Team[] footballTeams) {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("------------------------------");
+            System.out.println("File Sub-Menu");
+            System.out.println("------------------------------");
+            System.out.println("1 Hokey.csv.ser (" + hokeyTeams.length + " records)");
+            System.out.println("2 Basketball.csv.ser (" + basketballTeams.length + " records)");
+            System.out.println("3 Football.csv.ser (" + footballTeams.length + " records)");
+            System.out.println("4 Exit");
+            System.out.println("------------------------------");
+            System.out.print("Enter Your Choice: ");
+
+
+        }
     }
 
 
     public static void main(String[] args) {
         do_part1();
         do_part2();
+        do_part3();
     }
 }
 
