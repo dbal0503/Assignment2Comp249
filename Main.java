@@ -7,9 +7,16 @@ public class Main {
     public static String error;
     public static String missingfield;
     public static int count1 = 0;
-    public static String[] temp = new String[1000];
 
+    public static int countOutput = 0;
+    public static String[] temp = new String[1000];
+    public static String[] arr = new String[1000];
+    public static FileOutputStream[] fileOutputStreams = new FileOutputStream[1000];
+
+    public static ObjectOutputStream[] objectOutputStreams = new ObjectOutputStream[1000];
+    public static int totalteams;
     public static int filecount;
+    public static int currentSportIndex = 0;
 
     public static String validateshortfield(String[] fields, String csv) {
         boolean sportscheck = false;
@@ -123,18 +130,104 @@ public class Main {
             //will print to whatever file is input
         }
     }
-    public static void writeSer(Team team){
+    /*private static FileOutputStream filer(Team team){
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(team.getSport().trim() + ".csv.ser", true);
-            ObjectOutputStream outputStream = new ObjectOutputStream( new BufferedOutputStream(fileOutputStream));
-            outputStream.writeObject(team);
-            outputStream.close();
-            fileOutputStream.close();
+            return new FileOutputStream(team.getSport().trim() + ".csv.ser", true);
+        }
+        catch (IOException ioException){
+            System.out.println(ioException.getMessage());
+        }
+
+
+    }
+
+
+
+     */
+
+    public static void writeSer(Team[][] team){
+        System.out.println(team.length);
+        System.out.println(team[0].length);
+        System.out.println(team[1].length);
+        System.out.println(team[2].length);
+
+
+        try {
+            for (int i = 0; i<team.length; i++){
+
+                FileOutputStream fileOutputStream = new FileOutputStream(team[i][0].getSport().trim()+ ".csv.ser", true);
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                objectOutputStream.writeObject(team[i]);
+                objectOutputStream.close();
+                fileOutputStream.close();
+
+
+            }
+
+
+
+
+
         }
         catch (IOException ioException){
             System.out.println(ioException.getMessage());
 
         }
+    }
+    public static Team[][] sort(Team[] teams){
+        int ch=0;
+        int cb=0;
+        int cf=0;
+
+        for (int i =0; i<teams.length;i++){
+            switch (teams[i].getSport().trim()){
+                case "Hokey":{
+                    ch++;
+                    break;
+                }
+                case "Basketball":{
+                    cb++;
+                    break;
+                }
+                case "Football":{
+                    cf++;
+                    break;
+                }
+            }
+        }
+        Team[] teamhockey = new Team[ch];
+        Team[] teambasket = new Team[cb];
+        Team[] teamfoot = new Team[cf];
+        ch=0;
+        cb=0;
+        cf=0;
+        for (int i =0; i<teams.length;i++){
+            switch (teams[i].getSport().trim()){
+                case "Hokey":{
+                    teamhockey[ch] =teams[i];
+                    ch++;
+                    break;
+                }
+                case "Basketball":{
+                    teambasket[cb] =teams[i];
+                    cb++;
+                    break;
+                }
+                case "Football":{
+                    teamfoot[cf] =teams[i];
+                    cf++;
+                    break;
+                }
+            }
+        }
+        Team[][] teamsmulti = {teamhockey, teambasket, teamfoot};
+        for (int i =0; i<teamsmulti.length; i++){
+            for (int j =0; j<teamsmulti[i].length; j++){
+
+                System.out.println(teamsmulti[i][j].getSport());
+            }
+        }
+        return teamsmulti;
     }
 
     /*
@@ -295,7 +388,9 @@ public class Main {
                     }
                 }
             }
+
             teams = new Team[count];
+            totalteams = count;
 
             for (int i = 0; i < s.length; i++) {
                 try (BufferedReader bufferedReader = new BufferedReader(new FileReader(s[i]))) {
@@ -341,9 +436,9 @@ public class Main {
         Team[] hokeyTeams = new Team[10];
         Team[] basketballTeams = new Team[10];
         Team[] footballTeams = new Team[10];
-        int currentSportIndex = 0;
+
         int currentRecordIndex = 0;
-        Team[] currentSportArray = hokeyTeams;
+
 
 
         try {
@@ -351,40 +446,26 @@ public class Main {
             int counterH = 0;
             int counterB = 0;
             int counterF = 0;
+            ObjectInputStream[] objectInputStreams = new ObjectInputStream[hardcodedNames.length];
+            FileInputStream[] fileInputStreams = new FileInputStream[hardcodedNames.length];
 
             for (int i = 0; i < hardcodedNames.length; i++) {
-                FileInputStream fileInputStream = new FileInputStream(hardcodedNames[i]);
-               ObjectInputStream inputStream = new ObjectInputStream(new BufferedInputStream(fileInputStream));
-
-
-                        Team teamObj = (Team) inputStream.readObject();
-                        switch (i) {
-                            case 0:
-                                hokeyTeams[counterH] = teamObj;
-                                System.out.println("bb");
-                                counterH++;
-                                break;
-                            case 1:
-                                basketballTeams[counterB] = teamObj;
-                                counterB++;
-                                break;
-                            case 2:
-                                footballTeams[counterF] = teamObj;
-                                counterF++;
-                                break;
-                            default:
-                                break;
-                        }
-
-
+                fileInputStreams[i] = new FileInputStream(hardcodedNames[i]);
+                objectInputStreams[i] = new ObjectInputStream(fileInputStreams[i]);
 
             }
+            Team[] teamhokey= (Team[]) objectInputStreams[0].readObject();
+            Team[] teambasket= (Team[]) objectInputStreams[1].readObject();
+            Team[] teamfootball= (Team[]) objectInputStreams[2].readObject();
+
+
+
 
 
 
             System.out.println("Printing contents of hokey array");
-            for (Team element : hokeyTeams) {
-                System.out.print(element);
+            for (int i =0; i<teamhokey.length; i++){
+                System.out.println(teamhokey[i].toString());
             }
             System.out.println();
             System.out.println(counterH);
@@ -398,7 +479,7 @@ public class Main {
                 System.out.println("----------------------------");
                 System.out.println("Main Menu");
                 System.out.println("----------------------------");
-                System.out.println("v View the selected file: " + hardcodedNames[currentSportIndex] + " (" + currentSportArray.length + " records)");
+                System.out.println("v View the selected file: " + hardcodedNames[currentSportIndex]);
                 System.out.println("s Select a file to view");
                 System.out.println("x Exit");
                 System.out.println("----------------------------");
@@ -423,6 +504,7 @@ public class Main {
 
         } catch (IOException ioException) {
             System.out.println(ioException.getMessage());
+            ioException.printStackTrace(System.out);
 
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -444,9 +526,14 @@ public class Main {
             System.out.println("4 Exit");
             System.out.println("------------------------------");
             System.out.print("Enter Your Choice: ");
+            currentSportIndex = scanner.nextInt();
+
 
 
         }
+    }
+    public static void viewMenu(){
+
     }
 
 

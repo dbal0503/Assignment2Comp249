@@ -1,11 +1,11 @@
 import java.io.Serializable;
 
 public class Team implements Serializable {
-    String name;
-    String sport;
-    int year;
-    String record;
-    String flag;
+   private String name;
+   private String sport;
+   private int year;
+   private String record;
+   private String flag;
 
     public Team(String name, String sport, String year, String record, String flag){
         this.name = name;
@@ -56,9 +56,14 @@ public class Team implements Serializable {
     }
 
 
-
-
-
-
-
+    @Override
+    public String toString() {
+        return "Team{" +
+                "name='" + name + '\'' +
+                ", sport='" + sport + '\'' +
+                ", year=" + year +
+                ", record='" + record + '\'' +
+                ", flag='" + flag + '\'' +
+                '}';
+    }
 }
