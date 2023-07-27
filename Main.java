@@ -433,29 +433,29 @@ public class Main {
 
 
     public static void do_part3() {
-        Team[] hokeyTeams = new Team[10];
-        Team[] basketballTeams = new Team[10];
-        Team[] footballTeams = new Team[10];
+                Team[] hokeyTeams = new Team[10];
+                Team[] basketballTeams = new Team[10];
+                Team[] footballTeams = new Team[10];
 
-        int currentRecordIndex = 0;
+                int currentRecordIndex = 0;
 
 
 
-        try {
-            String[] hardcodedNames = {"Hokey.csv.ser", "Basketball.csv.ser", "Football.csv.ser"};
-            int counterH = 0;
-            int counterB = 0;
-            int counterF = 0;
-            ObjectInputStream[] objectInputStreams = new ObjectInputStream[hardcodedNames.length];
-            FileInputStream[] fileInputStreams = new FileInputStream[hardcodedNames.length];
+                try {
+                    String[] hardcodedNames = {"Hokey.csv.ser", "Basketball.csv.ser", "Football.csv.ser"};
+                    int counterH = 0;
+                    int counterB = 0;
+                    int counterF = 0;
+                    ObjectInputStream[] objectInputStreams = new ObjectInputStream[hardcodedNames.length];
+                    FileInputStream[] fileInputStreams = new FileInputStream[hardcodedNames.length];
 
-            for (int i = 0; i < hardcodedNames.length; i++) {
-                fileInputStreams[i] = new FileInputStream(hardcodedNames[i]);
-                objectInputStreams[i] = new ObjectInputStream(fileInputStreams[i]);
+                    for (int i = 0; i < hardcodedNames.length; i++) {
+                        fileInputStreams[i] = new FileInputStream(hardcodedNames[i]);
+                        objectInputStreams[i] = new ObjectInputStream(fileInputStreams[i]);
 
-            }
-            Team[] teamhokey= (Team[]) objectInputStreams[0].readObject();
-            Team[] teambasket= (Team[]) objectInputStreams[1].readObject();
+                    }
+                    Team[] teamhokey= (Team[]) objectInputStreams[0].readObject();
+                    Team[] teambasket= (Team[]) objectInputStreams[1].readObject();
             Team[] teamfootball= (Team[]) objectInputStreams[2].readObject();
 
 
