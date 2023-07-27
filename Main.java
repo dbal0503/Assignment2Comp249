@@ -408,9 +408,7 @@ public class Main {
 
                 }
             }
-           for (int i =0; i<teams.length;i++){
-               writeSer(teams[i]);
-           }
+            writeSer(sort(teams));
 
 
 
